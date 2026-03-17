@@ -1,0 +1,4 @@
+/files/*
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET
+  Access-Control-Expose-Headers: Content-Length, Content-Type
