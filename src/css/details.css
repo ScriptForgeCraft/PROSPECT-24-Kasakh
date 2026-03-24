@@ -6,6 +6,7 @@
   display: grid;
   grid-template-columns: 1fr 400px;
   padding: var(--desktop-padding);
+  padding-bottom: 2rem;
   gap: 4rem;
 }
 
@@ -51,7 +52,7 @@
   & ul {
     line-height: 1.5;
     display: grid;
-    grid-template-columns: 1fr ;
+    grid-template-columns: 1fr;
     column-gap: 10px;
   }
 
@@ -104,6 +105,9 @@
   height: min-content;
   border-radius: 8px;
   overflow: hidden;
+  position: sticky;
+  top: 120px;
+  align-self: start;
 }
 
 .document-content .document-header,

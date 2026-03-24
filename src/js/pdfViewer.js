@@ -18,6 +18,13 @@ class PDFModal {
         row.querySelector(".btn-download-all")?.click();
       });
     }
+
+    // Preload Office/OneDrive viewers after main page load to speed up opening
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        this.preloadOfficeViewers();
+      }, 3000);
+    });
   }
 
   isMobileDevice() {
@@ -75,6 +82,45 @@ class PDFModal {
 
     const fullUrl = this.getFullUrl(filePath);
     return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fullUrl)}`;
+  }
+
+  preloadOfficeViewers() {
+    const preloadUrls = new Set();
+    document.querySelectorAll(".doc-item").forEach((item) => {
+      const button = item.querySelector("button[data-file]");
+      const dataFile = button?.dataset.file || item.dataset.file;
+      if (dataFile) {
+        if (this.isOneDriveUrl(dataFile)) {
+          preloadUrls.add(dataFile);
+        } else if (this.isOfficeFile(dataFile)) {
+          preloadUrls.add(this.getOfficeViewerUrl(dataFile));
+        }
+      }
+    });
+
+    if (preloadUrls.size === 0) return;
+
+    preloadUrls.forEach((url) => {
+      if (!this.modalBody.querySelector(`iframe[data-preload-url="${url}"]`)) {
+        const iframe = document.createElement("iframe");
+        iframe.src = url;
+        iframe.tabIndex = -1;
+        iframe.loading = "lazy";
+        
+        // Exact styling as #pdf-frame so Excel displays correctly
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.style.background = "#ffffff";
+        iframe.style.border = "none";
+        iframe.style.display = "none";
+        
+        iframe.dataset.preloadUrl = url;
+        iframe.addEventListener("load", () => this.hideLoading());
+        iframe.addEventListener("error", () => this.handleLoadError());
+        
+        this.modalBody.appendChild(iframe);
+      }
+    });
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -172,20 +218,43 @@ class PDFModal {
       this.titleEl.textContent = title;
       this.showLoading();
 
+      // Reset DOM displays
+      this.iframe.style.display = "block";
+      this.modalBody.querySelectorAll("iframe[data-preload-url]").forEach(ifr => ifr.style.display = "none");
+
       if (this.isOneDriveUrl(filePath)) {
-        this.iframe.src = filePath;
         this.downloadLink.href = "./files/investment-calculation.xlsx";
         this.downloadLink.setAttribute("download", "Ներդրումային Հաշվարկ.xlsx");
         this.downloadLink.style.display = "inline-flex";
+        
+        const preloadedIframe = this.modalBody.querySelector(`iframe[data-preload-url="${filePath}"]`);
+        if (preloadedIframe) {
+          this.iframe.style.display = "none";
+          preloadedIframe.style.display = "block";
+          this.hideLoading();
+        } else {
+          this.iframe.src = filePath;
+        }
+
         this.showModal();
         return;
       }
       // ────────────────────────────────────────────────────────────────────────
 
       if (this.isOfficeFile(filePath)) {
-        this.iframe.src = this.getOfficeViewerUrl(filePath);
+        const targetUrl = this.getOfficeViewerUrl(filePath);
         this.downloadLink.href = filePath;
         this.downloadLink.style.display = "inline-flex";
+
+        const preloadedIframe = this.modalBody.querySelector(`iframe[data-preload-url="${targetUrl}"]`);
+        if (preloadedIframe) {
+          this.iframe.style.display = "none";
+          preloadedIframe.style.display = "block";
+          this.hideLoading();
+        } else {
+          this.iframe.src = targetUrl;
+        }
+
         this.showModal();
         return;
       }
@@ -236,26 +305,46 @@ class PDFModal {
     const existingError = this.modalBody.querySelector(".pdf-error-message");
     if (existingError) existingError.remove();
 
+    this.iframe.style.display = "block";
+    this.modalBody.querySelectorAll("iframe[data-preload-url]").forEach(ifr => ifr.style.display = "none");
+
     // ─── NEW: OneDrive embed ─────────────────────────────────────────────────
     if (this.isOneDriveUrl(filePath)) {
-      this.iframe.src = filePath;
       this.downloadLink.href = "./files/investment-calculation.xlsx";
       this.downloadLink.setAttribute("download", "Ներդրումային Հաշվարկ.xlsx");
       this.downloadLink.style.display = "inline-flex";
+      
+      const preloadedIframe = this.modalBody.querySelector(`iframe[data-preload-url="${filePath}"]`);
+      if (preloadedIframe) {
+        this.iframe.style.display = "none";
+        preloadedIframe.style.display = "block";
+        this.hideLoading();
+      } else {
+        this.iframe.src = filePath;
+      }
       return;
     }
     // ────────────────────────────────────────────────────────────────────────
 
     // ─── NEW: Office файл ────────────────────────────────────────────────────
     if (this.isOfficeFile(filePath)) {
-      this.iframe.src = this.getOfficeViewerUrl(filePath);
+      const targetUrl = this.getOfficeViewerUrl(filePath);
       this.downloadLink.href = filePath;
       this.downloadLink.style.display = "inline-flex";
+
+      const preloadedIframe = this.modalBody.querySelector(`iframe[data-preload-url="${targetUrl}"]`);
+      if (preloadedIframe) {
+        this.iframe.style.display = "none";
+        preloadedIframe.style.display = "block";
+        this.hideLoading();
+      } else {
+        this.iframe.src = targetUrl;
+      }
       return;
     }
     // ────────────────────────────────────────────────────────────────────────
 
- 
+
     const isGoogleDrive = filePath.includes("drive.google.com");
     const isMobile = this.isMobileDevice();
     const isTablet = this.isTabletDevice();

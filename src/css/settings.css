@@ -87,7 +87,7 @@ body.dark-mode {
 .settings__toggle:hover {
   background: #1e2a5e;
   opacity: 1;
-  box-shadow: 0  0 20px var(--toggle-hover-shadow);
+  box-shadow: -4px 6px 20px var(--toggle-hover-shadow);
   transform: translateX(-2px);
 }
 
