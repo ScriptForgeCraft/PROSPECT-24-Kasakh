@@ -10,6 +10,13 @@
   gap: 4rem;
 }
 
+.split-view-footer {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  padding: 0 var(--desktop-padding) var(--desktop-padding);
+  gap: 4rem;
+}
+
 /* =========================
    LEFT CONTENT
    ========================= */

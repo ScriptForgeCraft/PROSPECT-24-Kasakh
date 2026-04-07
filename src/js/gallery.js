@@ -63,6 +63,11 @@ import "swiper/css/zoom";
 
     const preloadedSet = new Set();
 
+    function isMobileDevice() {
+        return window.innerWidth <= 480;
+    }
+
+
     let zoomSwiper = null;
 
     let currentZoomContext = "main"; // "main" or "valuation"
@@ -225,16 +230,25 @@ import "swiper/css/zoom";
     }
 
 
+    function primeZoomTransition(duration) {
+        const el = zoomContainer?.querySelector('.swiper-zoom-container');
+        if (!el) return;
+        el.style.transitionProperty      = 'transform';
+        el.style.transitionDuration      = `${duration}ms`;
+        el.style.transitionTimingFunction = 'ease-out';
+        setTimeout(() => { el.style.transitionProperty = el.style.transitionDuration = el.style.transitionTimingFunction = ''; }, duration + 50);
+    }
 
     function setSwiperZoom(newScale, transitionDuration = 300) {
         if (!zoomSwiper || !zoomSwiper.zoom) return;
 
         currentScale = Math.min(Math.max(MIN_SCALE, newScale), MAX_SCALE);
 
+        primeZoomTransition(transitionDuration);
+
         if (currentScale === 1) {
             zoomSwiper.zoom.out();
         } else {
-
             zoomSwiper.zoom.in(currentScale);
         }
 
@@ -244,6 +258,7 @@ import "swiper/css/zoom";
     function resetZoomTransform() {
         currentScale = 1;
         if (zoomSwiper && zoomSwiper.zoom) {
+            primeZoomTransition(300);
             zoomSwiper.zoom.out();
         }
         updateZoomButtons();
@@ -371,14 +386,17 @@ import "swiper/css/zoom";
         const prevIndex = activeIndex;
         activeIndex = index;
 
-        const fullSrc = thumbs[index]?.dataset.full || thumbs[index]?.src;
-        if (!fullSrc) return;
+        // On mobile use the small thumb; on desktop use the medium "full" image
+        const mainSrc = isMobileDevice()
+            ? (thumbs[index]?.src || thumbs[index]?.dataset.full)
+            : (thumbs[index]?.dataset.full || thumbs[index]?.src);
+        if (!mainSrc) return;
 
-        mainImg.src = fullSrc;
-        mainImg.dataset.large = thumbs[index]?.dataset.large || fullSrc;
+        mainImg.src = mainSrc;
+        mainImg.dataset.large = thumbs[index]?.dataset.large || mainSrc;
 
         if (isZoomOpen() && zoomImage && currentZoomContext === "main") {
-            const largeSrc = thumbs[index]?.dataset.large || fullSrc;
+            const largeSrc = thumbs[index]?.dataset.large || mainSrc;
             zoomImage.src = largeSrc;
 
 

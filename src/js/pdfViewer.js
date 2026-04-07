@@ -12,12 +12,6 @@ class PDFModal {
 
   init() {
     this.attachEventListeners();
-    const row = document.querySelector(".doc-row-all");
-    if (row) {
-      row.querySelector("svg")?.addEventListener("click", () => {
-        row.querySelector(".btn-download-all")?.click();
-      });
-    }
 
     // Preload Office/OneDrive viewers after main page load to speed up opening
     window.addEventListener("load", () => {
@@ -44,6 +38,9 @@ class PDFModal {
       /iPad|iPhone|iPod/.test(navigator.userAgent) ||
       (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
     );
+
+
+
   }
 
   // ─── NEW: Office file helpers ─────────────────────────────────────────────────
@@ -106,20 +103,20 @@ class PDFModal {
         iframe.src = url;
         iframe.tabIndex = -1;
         iframe.loading = "lazy";
-        
+
         iframe.style.width = "100%";
         iframe.style.height = "100%";
         iframe.style.background = "#1E1E1E";
         iframe.style.border = "none";
-        
+
         iframe.style.position = "absolute";
         iframe.style.visibility = "hidden";
         iframe.style.top = "-9999px";
         iframe.style.left = "-9999px";
-        
+
         iframe.dataset.preloadUrl = url;
         iframe.dataset.isLoaded = "false";
-        
+
         iframe.addEventListener("load", () => {
           iframe.dataset.isLoaded = "true";
           // If this iframe is currently active, hide the loading spinner
@@ -129,7 +126,7 @@ class PDFModal {
           }
         });
         iframe.addEventListener("error", () => this.handleLoadError());
-        
+
         this.modalBody.appendChild(iframe);
       }
     });
@@ -138,6 +135,15 @@ class PDFModal {
   // ─────────────────────────────────────────────────────────────────────────────
 
   attachEventListeners() {
+    const fullscreenBtn = this.modal.querySelector('.fullscreen-toggle');
+    if (fullscreenBtn) {
+      fullscreenBtn.addEventListener('click', () => {
+        const content = this.modal.querySelector('.modal-content');
+        fullscreenBtn.classList.toggle('is-fullscreen');
+        content.classList.toggle('is-fullscreen');
+      });
+    }
+
     document.querySelectorAll(".btn-close").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.preventDefault();
@@ -228,8 +234,6 @@ class PDFModal {
 
     try {
       this.titleEl.textContent = title;
-      this.showLoading();
-
       // Reset DOM displays
       this.iframe.style.display = "block";
       this.modalBody.querySelectorAll("iframe[data-preload-url]").forEach(ifr => {
@@ -243,7 +247,7 @@ class PDFModal {
         this.downloadLink.href = "./files/investment-calculation.xlsx";
         this.downloadLink.setAttribute("download", "Ներդրումային Հաշվարկ.xlsx");
         this.downloadLink.style.display = "inline-flex";
-        
+
         const preloadedIframe = this.modalBody.querySelector(`iframe[data-preload-url="${filePath}"]`);
         if (preloadedIframe) {
           this.iframe.style.display = "none";
@@ -252,10 +256,11 @@ class PDFModal {
           preloadedIframe.style.top = "0";
           preloadedIframe.style.left = "0";
 
-          if (preloadedIframe.dataset.isLoaded === "true") {
-            setTimeout(() => this.hideLoading(), 500);
+          if (preloadedIframe.dataset.isLoaded !== "true") {
+            this.showLoading();
           }
         } else {
+          this.showLoading();
           this.iframe.src = filePath;
         }
 
@@ -277,10 +282,11 @@ class PDFModal {
           preloadedIframe.style.top = "0";
           preloadedIframe.style.left = "0";
 
-          if (preloadedIframe.dataset.isLoaded === "true") {
-            setTimeout(() => this.hideLoading(), 500);
+          if (preloadedIframe.dataset.isLoaded !== "true") {
+            this.showLoading();
           }
         } else {
+          this.showLoading();
           this.iframe.src = targetUrl;
         }
 
@@ -289,6 +295,7 @@ class PDFModal {
       }
       // ────────────────────────────────────────────────────────────────────────
 
+      this.showLoading();
       const isGoogleDrive = filePath.includes("drive.google.com");
       const isMobile = this.isMobileDevice();
       const isTablet = this.isTabletDevice();
@@ -329,8 +336,6 @@ class PDFModal {
   }
 
   loadFile(filePath) {
-    this.showLoading();
-
     const existingError = this.modalBody.querySelector(".pdf-error-message");
     if (existingError) existingError.remove();
 
@@ -347,7 +352,7 @@ class PDFModal {
       this.downloadLink.href = "./files/investment-calculation.xlsx";
       this.downloadLink.setAttribute("download", "Ներդրումային Հաշվարկ.xlsx");
       this.downloadLink.style.display = "inline-flex";
-      
+
       const preloadedIframe = this.modalBody.querySelector(`iframe[data-preload-url="${filePath}"]`);
       if (preloadedIframe) {
         this.iframe.style.display = "none";
@@ -356,10 +361,11 @@ class PDFModal {
         preloadedIframe.style.top = "0";
         preloadedIframe.style.left = "0";
 
-        if (preloadedIframe.dataset.isLoaded === "true") {
-          setTimeout(() => this.hideLoading(), 500);
+        if (preloadedIframe.dataset.isLoaded !== "true") {
+          this.showLoading();
         }
       } else {
+        this.showLoading();
         this.iframe.src = filePath;
       }
       return;
@@ -380,10 +386,11 @@ class PDFModal {
         preloadedIframe.style.top = "0";
         preloadedIframe.style.left = "0";
 
-        if (preloadedIframe.dataset.isLoaded === "true") {
-          setTimeout(() => this.hideLoading(), 500);
+        if (preloadedIframe.dataset.isLoaded !== "true") {
+          this.showLoading();
         }
       } else {
+        this.showLoading();
         this.iframe.src = targetUrl;
       }
       return;
@@ -391,6 +398,7 @@ class PDFModal {
     // ────────────────────────────────────────────────────────────────────────
 
 
+    this.showLoading();
     const isGoogleDrive = filePath.includes("drive.google.com");
     const isMobile = this.isMobileDevice();
     const isTablet = this.isTabletDevice();
@@ -447,6 +455,11 @@ class PDFModal {
   }
 
   close() {
+    const fullscreenBtn = this.modal.querySelector('.fullscreen-toggle');
+    const content = this.modal.querySelector('.modal-content');
+    if (fullscreenBtn) fullscreenBtn.classList.remove('is-fullscreen');
+    if (content) content.classList.remove('is-fullscreen');
+
     this.modal.classList.remove("active");
     document.body.style.overflow = "auto";
     setTimeout(() => {
@@ -547,27 +560,3 @@ let pdfModal;
 document.addEventListener("DOMContentLoaded", () => {
   pdfModal = new PDFModal();
 });
-
-window.viewPDF = (filePath, title) => {
-  if (pdfModal) {
-    pdfModal.open(filePath, title);
-  }
-};
-
-window.closeModal = () => {
-  if (pdfModal) {
-    pdfModal.close();
-  }
-};
-
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
