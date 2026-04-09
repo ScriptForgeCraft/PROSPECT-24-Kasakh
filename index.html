@@ -130,14 +130,14 @@
                                     decoding="async" width="800" height="600">
                             </div>
 
-                              <div class="swiper-slide">
+                            <div class="swiper-slide">
                                 <img class="thumb is-active" src="/images/thumbs/1.webp" data-full="/images/full/1.webp"
                                     data-large="/images/large/1.webp" data-index="0" alt="Պատկեր 1" loading="lazy"
                                     decoding="async" width="800" height="600">
                             </div>
 
 
-                              <div class="swiper-slide">
+                            <div class="swiper-slide">
                                 <img class="thumb is-active" src="/images/thumbs/2.webp" data-full="/images/full/2.webp"
                                     data-large="/images/large/2.webp" data-index="0" alt="Պատկեր 1" loading="lazy"
                                     decoding="async" width="800" height="600">
@@ -305,6 +305,7 @@
 
                         </div>
                         <div class="doc-row">
+
                             <div class="doc-item" data-file="./files/Գազպրոմի պատասխան Քասախ.pdf" data-title="Գազպրոմ">
                                 <span>Գազպրոմ</span>
                                 <a class="doc-download" href="./files/Գազպրոմի պատասխան Քասախ.pdf" download
@@ -319,6 +320,7 @@
 
                                 </a>
                             </div>
+
                         </div>
 
 
@@ -340,6 +342,8 @@
                             </div>
                         </div>
                     </div>
+
+
                     <div class="doc-row-all-download">
                         <div class="doc-row doc-row-all">
                             <a href="https://drive.google.com/uc?id=13xl-wzT7jVFfQRk9pqUrQwfjBcTNRClD&export=download"
@@ -376,7 +380,7 @@
                     <div class="doc-row">
 
                         <div class="doc-item"
-                            data-file="???"
+                            data-file="https://1drv.ms/x/c/99f7eb023f1e0cb6/IQSXbt45isJyRLT0sTnThxwAAROmMfGVu727JbKGInHRV6Q"
                             data-title="Բիզնես հաշվարկ">
                             <span>Բիզնես հաշվարկ</span>
                             <a class="doc-download" href="./files/investment-calculation.xlsx"
@@ -424,6 +428,8 @@
             </div>
         </section>
 
+
+
         <!-- PDF Viewer Modal -->
         <div id="pdf-modal" class="modal">
 
@@ -432,8 +438,28 @@
                 <div class="modal-header">
                     <h3 id="modal-title">Փաստաթուղթ</h3>
                     <div class="modal-controls">
-                        <a id="download-link" href="" download class="btn-action">Ներբեռնել</a>
 
+
+                        <!-- Fullscreen Toggle -->
+                        <button class="doc-btn fullscreen-toggle" type="button" aria-label="Fullscreen"
+                            title="Ամբողջ էկրանով">
+                            <!-- expand -->
+                            <svg class="icon-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
+                                </path>
+                            </svg>
+                            <!-- collapse -->
+                            <svg class="icon-collapse" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3">
+                                </path>
+                            </svg>
+                        </button>
+
+                        <a id="download-link" href="" download class="btn-action">Ներբեռնել</a>
                         <button class="btn-close" type="button" aria-label="Փակել"><svg viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -444,6 +470,8 @@
                                         fill="#ffffff"></path>
                                 </g>
                             </svg></button>
+
+
                     </div>
                 </div>
                 <div class="modal-tabs" id="modal-tabs" style="display:none;"></div>
@@ -494,7 +522,6 @@
         </div>
 
 
-
     </main>
 
     <!-- Settings -->
@@ -534,6 +561,7 @@
             </div>
         </div>
     </div>
+
 
     <footer class="footer">
         <div class="footer-content">
@@ -634,6 +662,7 @@
         </div>
         <div class="toast" id="toast" role="alert" aria-live="polite"></div>
     </footer>
+
 </body>
 
 </html>
