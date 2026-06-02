@@ -12,7 +12,9 @@
     <link rel="preload" as="image" href="/images/bg.webp" fetchpriority="high">
 
     <link rel="stylesheet" href="/src/css/main.css">
+    <link rel="stylesheet" href="/src/css/i18n.css">
 
+    <script type="module" src="/src/js/i18n.js" defer></script>
     <script type="module" src="/src/js/main.js" defer></script>
 </head>
 
@@ -39,6 +41,15 @@
                     <li><a href="#valuation">Գնահատում</a></li>
                 </ul>
             </nav>
+
+            <div class="language-switcher" aria-label="Լեզվի ընտրություն">
+                <button type="button" class="language-switcher__btn active" data-lang="hy" aria-pressed="true"
+                    aria-label="Հայերեն">HY</button>
+                <button type="button" class="language-switcher__btn" data-lang="ru" aria-pressed="false"
+                    aria-label="Русский">RU</button>
+                <button type="button" class="language-switcher__btn" data-lang="en" aria-pressed="false"
+                    aria-label="English">EN</button>
+            </div>
 
             <!-- BURGER BUTTON -->
             <button class="burger-btn" aria-label="Բացել մենյուն">
