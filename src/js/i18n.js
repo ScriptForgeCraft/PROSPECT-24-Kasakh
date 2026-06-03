@@ -1,6 +1,11 @@
 const STORAGE_KEY = "prospect24_language";
 const DEFAULT_LANGUAGE = "hy";
 const SUPPORTED_LANGUAGES = ["hy", "ru", "en"];
+const languageLogos = {
+  hy: "/images/logo.webp",
+  ru: "/images/logo(ru).webp",
+  en: "/images/logo(en).webp",
+};
 const ARMENIAN_RE = /[\u0530-\u058F]/;
 const TRANSLATABLE_ATTRIBUTES = ["alt", "aria-label", "title", "data-title", "data-text", "download", "content"];
 
@@ -156,6 +161,10 @@ function getTranslation(source, lang = currentLanguage) {
   if (lang === DEFAULT_LANGUAGE) return source;
   return translations[normalizeText(source)]?.[lang] || source;
 }
+function getLanguageLogo(lang = currentLanguage) {
+  const safeLang = SUPPORTED_LANGUAGES.includes(lang) ? lang : DEFAULT_LANGUAGE;
+  return languageLogos[safeLang] ?? languageLogos[DEFAULT_LANGUAGE];
+}
 
 function cssString(value) {
   return `"${String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
@@ -170,6 +179,12 @@ function applyCssText(lang) {
     "--i18n-loading-label",
     cssString(lang === "hy" ? "Բեռնում..." : lang === "ru" ? "Загрузка..." : "Loading..."),
   );
+}
+
+function applyLanguageLogos(lang) {
+  document.querySelectorAll("[data-i18n-logo]").forEach((image) => {
+    image.src = getLanguageLogo(lang);
+  });
 }
 
 function translateTextNodes(lang) {
@@ -306,9 +321,15 @@ function applyLanguage(lang, options = {}) {
   translateTextNodes(safeLang);
   translateAttributes(safeLang);
   updateLanguageButtons(safeLang);
+  applyLanguageLogos(safeLang);
   applyCssText(safeLang);
   translateDynamicText(safeLang);
-}
+
+  window.dispatchEvent(
+    new CustomEvent("prospect24:languagechange", {
+      detail: { lang: safeLang },
+    }),
+  );}
 
 function initLanguageSwitcher() {
   document.querySelectorAll("[data-lang]").forEach((button) => {
@@ -323,6 +344,7 @@ function initLanguageSwitcher() {
 window.prospectI18n = {
   applyLanguage,
   getLanguage: () => currentLanguage,
+  getLogoSrc: getLanguageLogo,
   t: getTranslation,
   translations,
 };
