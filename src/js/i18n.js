@@ -63,6 +63,7 @@ const commonTranslations = {
   "Սխեմա": entry("Схема", "Scheme"),
   "Շենքի հատակագիծ": entry("План здания", "Building floor plan"),
   "Սեյսմիկ": entry("Сейсмика", "Seismic"),
+  "կառավարության որոշում": entry("Решение правительства", "Government decision"),
   "Վեոլիա ջուր": entry("Веолия вода", "Veolia Water"),
   "ՀԷՑ": entry("Электросети Армении", "Electric Networks of Armenia"),
   "Նախագծման Թույլտվություն": entry("Разрешение на проектирование", "Design permit"),
